@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="mn">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Монгол дуу оруулга</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Familjen+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#12171c;
+    --panel:#1a2129;
+    --raise:#212a33;
+    --rule:#2c3843;
+    --text:#dce3ea;
+    --dim:#7d8b99;
+    --amber:#e0a33e;
+    --live:#d8442f;
+    --ok:#5fae7d;
+  }
+
+  *{box-sizing:border-box}
+
+  html{background:var(--ink)}
+
+  body{
+    margin:0;
+    background:var(--ink);
+    color:var(--text);
+    font-family:"Familjen Grotesk",system-ui,sans-serif;
+    font-size:16px;
+    line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  .wrap{max-width:860px;margin:0 auto;padding:56px 24px 96px}
+
+  /* ---------------------------------------------- hero: хоёр дууны зам */
+
+  .masthead{margin-bottom:44px}
+
+  .masthead h1{
+    font-size:clamp(30px,5.4vw,46px);
+    font-weight:700;
+    letter-spacing:-.024em;
+    line-height:1.06;
+    margin:0 0 12px;
+  }
+
+  .masthead p{
+    margin:0;
+    max-width:52ch;
+    color:var(--dim);
+    font-size:17px;
+  }
+
+  .tracks{
+    margin:32px 0 0;
+    border:1px solid var(--rule);
+    border-radius:3px;
+    background:var(--panel);
+    overflow:hidden;
+  }
+
+  .track{display:flex;align-items:center;gap:14px;padding:13px 16px}
+  .track + .track{border-top:1px solid var(--rule)}
+
+  .track-tag{
+    font-family:"IBM Plex Mono",monospace;
+    font-size:11px;
+    color:var(--dim);
+    width:22px;
+    flex:none;
+  }
+
+  .wave{flex:1;height:34px;display:block}
+  .wave rect{fill:var(--dim);opacity:.42}
+  .track.out .wave rect{fill:var(--amber);opacity:.2}
+  .track.out.hot .wave rect{opacity:.85;transition:opacity .5s}
+
+  /* ---------------------------------------------- эх файл */
+
+  .drop{
+    margin-top:34px;
+    border:1px dashed var(--rule);
+    border-radius:3px;
+    background:var(--panel);
+    padding:38px 24px;
+    text-align:center;
+    cursor:pointer;
+    transition:border-color .18s,background .18s;
+  }
+  .drop:hover,.drop.over{border-color:var(--amber);background:var(--raise)}
+  .drop:focus-visible{outline:2px solid var(--amber);outline-offset:3px}
+
+  .drop strong{display:block;font-size:18px;font-weight:600;margin-bottom:6px}
+  .drop span{color:var(--dim);font-size:14px}
+
+  .chosen{
+    display:none;
+    margin-top:34px;
+    padding:16px 18px;
+    background:var(--panel);
+    border:1px solid var(--rule);
+    border-left:2px solid var(--amber);
+    border-radius:3px;
+    align-items:baseline;
+    gap:12px;
+  }
+  .chosen.on{display:flex}
+  .chosen b{font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .chosen em{font-style:normal;color:var(--dim);font-size:13px;flex:none}
+  .chosen button{
+    margin-left:auto;flex:none;background:none;border:none;color:var(--dim);
+    cursor:pointer;font:inherit;font-size:13px;text-decoration:underline;padding:0;
+  }
+  .chosen button:hover{color:var(--text)}
+
+  /* ---------------------------------------------- тохиргоо */
+
+  .settings{margin-top:28px}
+
+  .row{
+    display:flex;align-items:center;gap:16px;
+    padding:15px 0;border-bottom:1px solid var(--rule);
+  }
+  .row:first-child{border-top:1px solid var(--rule)}
+
+  .row-label{flex:1;min-width:0}
+  .row-label b{display:block;font-weight:500;font-size:15px}
+  .row-label small{display:block;color:var(--dim);font-size:13px;line-height:1.4;margin-top:2px}
+
+  select,input[type=range]{
+    background:var(--raise);color:var(--text);
+    border:1px solid var(--rule);border-radius:3px;
+    font:inherit;font-size:14px;padding:7px 10px;
+  }
+  select{min-width:132px;cursor:pointer}
+  select:focus-visible,input:focus-visible,textarea:focus-visible{
+    outline:2px solid var(--amber);outline-offset:1px;
+  }
+
+  input[type=range]{padding:0;width:132px;accent-color:var(--amber);border:none;background:none}
+
+  .toggle{
+    position:relative;width:44px;height:24px;flex:none;
+    background:var(--raise);border:1px solid var(--rule);border-radius:12px;
+    cursor:pointer;transition:background .18s;padding:0;
+  }
+  .toggle::after{
+    content:"";position:absolute;top:3px;left:3px;width:16px;height:16px;
+    border-radius:50%;background:var(--dim);transition:transform .18s,background .18s;
+  }
+  .toggle[aria-pressed=true]{background:#3a2f1c;border-color:var(--amber)}
+  .toggle[aria-pressed=true]::after{transform:translateX(20px);background:var(--amber)}
+  .toggle:focus-visible{outline:2px solid var(--amber);outline-offset:2px}
+
+  .mono{font-family:"IBM Plex Mono",monospace;font-size:13px;color:var(--amber);width:42px;text-align:right;flex:none}
+
+  details.glossary{margin-top:18px}
+  details.glossary summary{
+    cursor:pointer;color:var(--dim);font-size:14px;padding:6px 0;
+    list-style:none;
+  }
+  details.glossary summary::-webkit-details-marker{display:none}
+  details.glossary summary::before{content:"+ ";color:var(--amber)}
+  details.glossary[open] summary::before{content:"– "}
+  details.glossary summary:hover{color:var(--text)}
+
+  textarea{
+    width:100%;margin-top:8px;min-height:92px;resize:vertical;
+    background:var(--raise);color:var(--text);
+    border:1px solid var(--rule);border-radius:3px;
+    font-family:"IBM Plex Mono",monospace;font-size:13px;line-height:1.7;padding:10px 12px;
+  }
+
+  /* ---------------------------------------------- үйлдэл */
+
+  .go{
+    margin-top:28px;width:100%;
+    background:var(--amber);color:#181206;
+    border:none;border-radius:3px;
+    font:inherit;font-weight:600;font-size:16px;
+    padding:15px;cursor:pointer;
+    transition:background .18s;
+  }
+  .go:hover:not(:disabled){background:#efb457}
+  .go:disabled{background:var(--raise);color:var(--dim);cursor:not-allowed}
+  .go:focus-visible{outline:2px solid var(--text);outline-offset:2px}
+
+  .notice{
+    margin-top:16px;padding:13px 15px;border-radius:3px;font-size:14px;
+    background:#2a1b18;border:1px solid #4a2a22;color:#efb0a2;
+  }
+  .notice.hide{display:none}
+  .notice code{font-family:"IBM Plex Mono",monospace;font-size:12.5px;color:#f6cfc4}
+
+  /* ---------------------------------------------- явц: суваг бүрээр */
+
+  .desk{display:none;margin-top:44px}
+  .desk.on{display:block}
+
+  .desk h2{
+    font-size:13px;font-weight:600;color:var(--dim);
+    margin:0 0 14px;letter-spacing:.01em;
+  }
+
+  .strip{
+    display:flex;align-items:center;gap:14px;
+    padding:14px 16px;
+    border:1px solid var(--rule);border-top:none;
+    background:var(--panel);
+  }
+  .strip:first-of-type{border-top:1px solid var(--rule);border-radius:3px 3px 0 0}
+  .strip:last-of-type{border-radius:0 0 3px 3px}
+
+  .strip-n{
+    font-family:"IBM Plex Mono",monospace;font-size:12px;
+    color:var(--rule);width:16px;flex:none;
+  }
+  .strip.live .strip-n,.strip.done .strip-n{color:var(--dim)}
+
+  .strip-name{width:126px;flex:none;font-size:15px;color:var(--dim)}
+  .strip.live .strip-name{color:var(--text);font-weight:500}
+  .strip.done .strip-name{color:var(--text)}
+
+  .meter{flex:1;height:5px;background:var(--raise);border-radius:3px;overflow:hidden}
+  .meter i{display:block;height:100%;width:0;background:var(--amber);transition:width .5s ease}
+  .strip.done .meter i{width:100%;background:var(--ok)}
+
+  .lamp{
+    width:7px;height:7px;border-radius:50%;flex:none;
+    background:var(--rule);
+  }
+  .strip.live .lamp{background:var(--live)}
+  .strip.done .lamp{background:var(--ok)}
+
+  @media (prefers-reduced-motion:no-preference){
+    .strip.live .lamp{animation:pulse 1.5s ease-in-out infinite}
+  }
+  @keyframes pulse{50%{opacity:.25}}
+
+  .status{
+    display:flex;justify-content:space-between;gap:16px;
+    margin-top:14px;font-size:14px;color:var(--dim);
+  }
+  .status .pct{font-family:"IBM Plex Mono",monospace;color:var(--amber)}
+
+  /* ---------------------------------------------- үр дүн */
+
+  .result{display:none;margin-top:44px}
+  .result.on{display:block}
+
+  .result video{
+    width:100%;border-radius:3px;background:#000;display:block;
+    border:1px solid var(--rule);
+  }
+
+  .files{display:flex;flex-wrap:wrap;gap:10px;margin-top:18px}
+  .files a{
+    color:var(--text);text-decoration:none;font-size:14px;
+    padding:9px 15px;border:1px solid var(--rule);border-radius:3px;
+    background:var(--panel);transition:border-color .18s;
+  }
+  .files a:hover{border-color:var(--amber)}
+  .files a:focus-visible{outline:2px solid var(--amber);outline-offset:2px}
+
+  .lines{margin-top:26px;border-top:1px solid var(--rule)}
+  .line{display:flex;gap:16px;padding:12px 0;border-bottom:1px solid var(--rule)}
+  .line time{
+    font-family:"IBM Plex Mono",monospace;font-size:12px;color:var(--dim);
+    flex:none;width:56px;padding-top:3px;
+  }
+  .line div{flex:1;min-width:0}
+  .line p{margin:0;font-size:15px}
+  .line p.src{color:var(--dim);font-size:13.5px;margin-top:3px}
+
+  @media (max-width:620px){
+    .wrap{padding:36px 18px 72px}
+    .row{flex-wrap:wrap}
+    .strip-name{width:auto;flex:1}
+    .meter{flex-basis:100%;order:9}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="masthead">
+    <h1>Англи видеог монгол хоолойтой болгох</h1>
+    <p>Файлаа оруулаад орхи. Яриаг нь таньж, орчуулж, монгол хоолойгоор уншиж,
+       эх дууг нь намсгаад буцааж давхарлана.</p>
+
+    <div class="tracks" aria-hidden="true">
+      <div class="track"><span class="track-tag">EN</span><svg class="wave" id="waveIn" viewBox="0 0 600 34" preserveAspectRatio="none"></svg></div>
+      <div class="track out" id="trackOut"><span class="track-tag">MN</span><svg class="wave" id="waveOut" viewBox="0 0 600 34" preserveAspectRatio="none"></svg></div>
+    </div>
+  </header>
+
+  <div class="drop" id="drop" tabindex="0" role="button">
+    <strong>Видео файлаа энд чир</strong>
+    <span>эсвэл дарж сонго — mp4, mkv, mov, avi, ts, webm</span>
+    <input type="file" id="file" accept="video/*,audio/*" hidden>
+  </div>
+
+  <div class="chosen" id="chosen">
+    <b id="chosenName"></b>
+    <em id="chosenSize"></em>
+    <button type="button" id="clear">солих</button>
+  </div>
+
+  <div class="settings">
+    <div class="row">
+      <div class="row-label">
+        <b>Хоолой</b>
+        <small>Azure-ийн монгол neural хоолой</small>
+      </div>
+      <select id="voice">
+        <option value="female">Есүй — эмэгтэй</option>
+        <option value="male">Батаа — эрэгтэй</option>
+      </select>
+    </div>
+
+    <div class="row">
+      <div class="row-label">
+        <b>Эх дууны түвшин</b>
+        <small>Хөгжим, дуу чимээг хэр үлдээхийг сонго</small>
+      </div>
+      <input type="range" id="vol" min="0" max="40" value="10">
+      <span class="mono" id="volOut">10%</span>
+    </div>
+
+    <div class="row">
+      <div class="row-label">
+        <b>Ярианы үед автоматаар намсгах</b>
+        <small>Монгол хоолой орох үед эх дуу нь өөрөө сулрана</small>
+      </div>
+      <button type="button" class="toggle" id="duck" aria-pressed="true" aria-label="Автоматаар намсгах"></button>
+    </div>
+
+    <div class="row">
+      <div class="row-label">
+        <b>Хадмалыг видеон дээр шатаах</b>
+        <small>Асаавал видео дахин кодлогдоно — удаан болно</small>
+      </div>
+      <button type="button" class="toggle" id="burn" aria-pressed="false" aria-label="Хадмал шатаах"></button>
+    </div>
+
+    <details class="glossary">
+      <summary>Нэр томьёоны жагсаалт</summary>
+      <textarea id="glossary" placeholder="machine learning = машин сургалт&#10;Anthropic = Антропик"></textarea>
+    </details>
+  </div>
+
+  <button class="go" id="go" disabled>Дуу оруулж эхлэх</button>
+  <div class="notice hide" id="notice"></div>
+
+  <section class="desk" id="desk">
+    <h2>Явц</h2>
+    <div class="strip" data-step="extract">
+      <span class="strip-n">1</span><span class="strip-name">Аудио салгах</span>
+      <span class="meter"><i></i></span><span class="lamp"></span>
+    </div>
+    <div class="strip" data-step="transcribe">
+      <span class="strip-n">2</span><span class="strip-name">Яриа таних</span>
+      <span class="meter"><i></i></span><span class="lamp"></span>
+    </div>
+    <div class="strip" data-step="translate">
+      <span class="strip-n">3</span><span class="strip-name">Орчуулах</span>
+      <span class="meter"><i></i></span><span class="lamp"></span>
+    </div>
+    <div class="strip" data-step="synthesize">
+      <span class="strip-n">4</span><span class="strip-name">Хоолой уншуулах</span>
+      <span class="meter"><i></i></span><span class="lamp"></span>
+    </div>
+    <div class="strip" data-step="mix">
+      <span class="strip-n">5</span><span class="strip-name">Нийлүүлэх</span>
+      <span class="meter"><i></i></span><span class="lamp"></span>
+    </div>
+    <div class="status">
+      <span id="statusMsg">Хүлээгдэж байна</span>
+      <span class="pct" id="statusPct">0%</span>
+    </div>
+  </section>
+
+  <section class="result" id="result">
+    <video id="player" controls preload="metadata"></video>
+    <div class="files" id="files"></div>
+    <div class="lines" id="lines"></div>
+  </section>
+
+</div>
+
+<script>
+const READY = {{ ready | tojson }};
+const STEPS = ["extract","transcribe","translate","synthesize","mix"];
+
+const $ = id => document.getElementById(id);
+let picked = null, timer = null;
+
+/* --- дууны замын чимэглэл: тогтмол хэлбэртэй, санамсаргүй биш --- */
+function drawWave(svg, seed, height){
+  let s = seed, out = "";
+  for(let x = 0; x < 600; x += 5){
+    s = (s * 1103515245 + 12345) % 2147483648;
+    const h = 3 + (s / 2147483648) * height;
+    out += `<rect x="${x}" y="${(34-h)/2}" width="3" height="${h}" rx="1"/>`;
+  }
+  svg.innerHTML = out;
+}
+drawWave($("waveIn"), 7, 26);
+drawWave($("waveOut"), 91, 22);
+
+/* --- файл сонгох --- */
+const drop = $("drop"), fileInput = $("file");
+
+function human(bytes){
+  const u = ["B","KB","MB","GB"];
+  let i = 0, n = bytes;
+  while(n >= 1024 && i < u.length - 1){ n /= 1024; i++; }
+  return n.toFixed(n >= 10 || i === 0 ? 0 : 1) + " " + u[i];
+}
+
+function choose(f){
+  picked = f;
+  $("chosenName").textContent = f.name;
+  $("chosenSize").textContent = human(f.size);
+  $("chosen").classList.add("on");
+  drop.style.display = "none";
+  $("go").disabled = false;
+}
+
+drop.addEventListener("click", () => fileInput.click());
+drop.addEventListener("keydown", e => {
+  if(e.key === "Enter" || e.key === " "){ e.preventDefault(); fileInput.click(); }
+});
+fileInput.addEventListener("change", e => { if(e.target.files[0]) choose(e.target.files[0]); });
+
+["dragenter","dragover"].forEach(ev =>
+  drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.add("over"); }));
+["dragleave","drop"].forEach(ev =>
+  drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.remove("over"); }));
+drop.addEventListener("drop", e => { if(e.dataTransfer.files[0]) choose(e.dataTransfer.files[0]); });
+
+$("clear").addEventListener("click", () => {
+  picked = null; fileInput.value = "";
+  $("chosen").classList.remove("on");
+  drop.style.display = "";
+  $("go").disabled = true;
+});
+
+/* --- тохиргоо --- */
+$("vol").addEventListener("input", e => $("volOut").textContent = e.target.value + "%");
+document.querySelectorAll(".toggle").forEach(t =>
+  t.addEventListener("click", () =>
+    t.setAttribute("aria-pressed", t.getAttribute("aria-pressed") === "true" ? "false" : "true")));
+
+/* --- эхлэх түлхүүр бэлэн эсэх --- */
+function warn(html){
+  const n = $("notice");
+  n.innerHTML = html;
+  n.classList.remove("hide");
+}
+const absent = [];
+if(!READY.ffmpeg) absent.push("<code>ffmpeg</code> суулгаагүй байна");
+if(!READY.openai) absent.push("<code>OPENAI_API_KEY</code>");
+if(!READY.anthropic) absent.push("<code>ANTHROPIC_API_KEY</code>");
+if(!READY.azure) absent.push("<code>AZURE_SPEECH_KEY</code> ба <code>AZURE_SPEECH_REGION</code>");
+if(absent.length){
+  warn("Ажиллуулахын өмнө <code>.env</code> файлдаа дараахыг нэмнэ үү: " + absent.join(", ") + ".");
+}
+
+/* --- ажил эхлүүлэх --- */
+$("go").addEventListener("click", async () => {
+  if(!picked) return;
+  $("notice").classList.add("hide");
+  $("go").disabled = true;
+  $("go").textContent = "Боловсруулж байна…";
+  $("result").classList.remove("on");
+  $("desk").classList.add("on");
+  $("desk").scrollIntoView({behavior:"smooth", block:"nearest"});
+
+  const fd = new FormData();
+  fd.append("video", picked);
+  fd.append("voice", $("voice").value);
+  fd.append("original_volume", ($("vol").value / 100).toFixed(2));
+  fd.append("duck", $("duck").getAttribute("aria-pressed"));
+  fd.append("burn_subtitles", $("burn").getAttribute("aria-pressed"));
+  fd.append("glossary", $("glossary").value);
+
+  try{
+    const res = await fetch("/api/jobs", {method:"POST", body:fd});
+    const data = await res.json();
+    if(!res.ok) throw new Error(data.error || "Эхлүүлж чадсангүй.");
+    poll(data.id);
+  }catch(err){
+    fail(err.message);
+  }
+});
+
+function fail(msg){
+  warn(msg);
+  $("go").disabled = false;
+  $("go").textContent = "Дахин оролдох";
+  document.querySelectorAll(".strip").forEach(s => s.classList.remove("live"));
+}
+
+function poll(id){
+  clearInterval(timer);
+  timer = setInterval(async () => {
+    let job;
+    try{
+      const r = await fetch("/api/jobs/" + id);
+      job = await r.json();
+    }catch{ return; }
+
+    $("statusMsg").textContent = job.message || "";
+    $("statusPct").textContent = Math.round(job.progress) + "%";
+
+    const at = STEPS.indexOf(job.step);
+    document.querySelectorAll(".strip").forEach(strip => {
+      const i = STEPS.indexOf(strip.dataset.step);
+      strip.classList.toggle("done", i < at || job.status === "done");
+      strip.classList.toggle("live", i === at && job.status === "running");
+      if(i === at && job.status === "running"){
+        const within = typeof job.step_progress === "number" ? job.step_progress : 0;
+        strip.querySelector(".meter i").style.width =
+          Math.max(6, Math.min(100, within)) + "%";
+      }else if(i < at || job.status === "done"){
+        strip.querySelector(".meter i").style.width = "100%";
+      }
+    });
+
+    if(job.status === "done"){
+      clearInterval(timer);
+      finish(id, job.result);
+    }else if(job.status === "error"){
+      clearInterval(timer);
+      fail(job.error);
+    }
+  }, 1200);
+}
+
+function tc(sec){
+  const m = Math.floor(sec / 60), s = Math.floor(sec % 60);
+  return String(m).padStart(2,"0") + ":" + String(s).padStart(2,"0");
+}
+
+async function finish(id, result){
+  $("go").disabled = false;
+  $("go").textContent = "Дахин ажиллуулах";
+  $("trackOut").classList.add("hot");
+
+  $("player").src = "/api/jobs/" + id + "/preview";
+  $("files").innerHTML = `
+    <a href="/api/jobs/${id}/download/video">Видео татах</a>
+    <a href="/api/jobs/${id}/download/mn">Монгол хадмал (.srt)</a>
+    <a href="/api/jobs/${id}/download/en">Англи хадмал (.srt)</a>`;
+  $("result").classList.add("on");
+
+  $("statusMsg").textContent =
+    `${result.segments} өгүүлбэр, ${tc(result.duration)} урт` +
+    (result.compressed ? ` · ${result.compressed} өгүүлбэрийг хугацаанд нь багтаахаар хурдасгав` : "");
+
+  try{
+    const lines = await (await fetch("/api/jobs/" + id + "/transcript")).json();
+    $("lines").innerHTML = lines.map(l => `
+      <div class="line">
+        <time>${tc(l.start)}</time>
+        <div><p>${esc(l.mn)}</p><p class="src">${esc(l.en)}</p></div>
+      </div>`).join("");
+  }catch{}
+}
+
+function esc(s){
+  return String(s ?? "").replace(/[&<>]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;"}[c]));
+}
+</script>
+</body>
+</html>

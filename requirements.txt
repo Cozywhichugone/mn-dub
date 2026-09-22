@@ -1,0 +1,6 @@
+flask>=3.0
+requests>=2.31
+python-dotenv>=1.0
+
+# Whisper-ийг локалаар (интернэтгүй, төлбөргүй) ажиллуулах бол:
+# faster-whisper>=1.0
