@@ -1,0 +1,23 @@
+﻿app = "mn-dub"
+primary_region = "sin"
+
+[build]
+
+[env]
+  PORT = "8080"
+  MAX_UPLOAD_GB = "2"
+
+[http_service]
+  internal_port = 8080
+  force_https = true
+  auto_stop_machines = false
+  auto_start_machines = true
+  min_machines_running = 1
+
+[[vm]]
+  size = "shared-cpu-2x"
+  memory = "4gb"
+
+[[mounts]]
+  source = "mndub_data"
+  destination = "/app/data"

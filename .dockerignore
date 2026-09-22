@@ -1,0 +1,10 @@
+﻿data/
+__pycache__/
+*.pyc
+.env
+venv/
+.git/
+*.mp4
+*.mkv
+*.wav
+*.mp3
